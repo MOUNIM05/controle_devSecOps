@@ -1,0 +1,30 @@
+name: DevSecOps Security Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install flask bandit safety
+
+    - name: Bandit SAST Scan
+      run: |
+        bandit -r .
+
+    - name: Safety Dependency Scan
+      run: |
+        safety check
