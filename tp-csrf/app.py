@@ -1,14 +1,25 @@
 from flask import Flask, request
 import subprocess
+import hashlib
 
 app = Flask(__name__)
 
-@app.route("/run")
-def run():
-    cmd = request.args.get("cmd")
-   
-    return subprocess.check_output(cmd, shell=True)
 
-if __name__ == "__main__":
+ADMIN_PASSWORD = "123456"
 
-    app.run(debug=True)
+def hash_password(password):
+  
+    return hashlib.md5(password.encode()).hexdigest()
+
+@app.route("/login")
+def login():
+    username = request.args.get("username")
+    password = request.args.get("password")
+
+    if username == "admin" and hash_password(password) == hash_password(ADMIN_PASSWORD):
+        return "Logged in"
+    return "Invalid credentials"
+
+@app.route("/ping")
+def ping():
+    host =
